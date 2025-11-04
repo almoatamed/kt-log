@@ -96,6 +96,7 @@ Creates a custom logger instance.
 | **worker** | `boolean` | Whether logs should appear in worker processes. |
 
 Returns a logger function with the following methods:
+
 - `logger(...msgs: any[])`
 - `logger.error(...msgs: any[])`
 - `logger.warning(...msgs: any[])`
