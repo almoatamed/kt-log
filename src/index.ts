@@ -3,11 +3,11 @@ import { getConfig } from "locate-config-kt";
 import { dashDateFormatter } from "kt-common";
 
 export type LoggingConfig = {
-    hideLogs: () => boolean;
-    overrideConsoleLog?: () => boolean;
+    hideLogs: (() => boolean) | boolean;
+    overrideConsoleLog?: (() => boolean) | boolean;
 };
 
-const loadConfig = async () => {
+const loadConfig = async (): Promise<LoggingConfig> => {
     const defaultLog: LoggingConfig = {
         hideLogs: () => false,
         overrideConsoleLog: () => false,
@@ -27,7 +27,14 @@ const loggingConfig = await loadConfig();
 
 export const forceLog = console.log;
 
-if (loggingConfig.hideLogs()) {
+const isValue = (v?: (() => boolean) | boolean) => {
+    if (typeof v == "function") {
+        return v();
+    }
+    return !!v;
+};
+
+if (isValue(loggingConfig.hideLogs)) {
     console.log = () => {};
     console.warn = () => {};
     console.info = () => {};
@@ -64,7 +71,7 @@ const Logger = function (options: LoggerProps) {
         });
     }
     const logger = function (...msgs: any[]) {
-        if (loggingConfig.hideLogs()) {
+        if (isValue(loggingConfig.hideLogs)) {
             return;
         }
 
@@ -96,7 +103,7 @@ const Logger = function (options: LoggerProps) {
         }
     };
     logger.warning = function (...msgs: any[]) {
-        if (loggingConfig.hideLogs()) {
+        if (isValue(loggingConfig.hideLogs)) {
             return;
         }
         if (!msgs[0]) {
@@ -143,7 +150,7 @@ export const generalLogger = Logger({
     name: "General",
 });
 
-if (loggingConfig.overrideConsoleLog?.()) {
+if (isValue(loggingConfig.overrideConsoleLog)) {
     console.log = generalLogger;
     console.warn = generalLogger.warning;
     console.error = generalLogger.error;
