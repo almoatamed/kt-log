@@ -23,7 +23,14 @@ const loadConfig = async (): Promise<LoggingConfig> => {
     }
 };
 
-const loggingConfig = await loadConfig();
+let loggingConfig: LoggingConfig = {
+    hideLogs: false,
+    overrideConsoleLog: false,
+};
+
+loadConfig().then((config) => {
+    loggingConfig = config;
+});
 
 export const forceLog = console.log;
 

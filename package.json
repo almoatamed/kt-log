@@ -1,6 +1,6 @@
 {
-  "name": "kt-log",
-  "version": "1.0.0",
+  "name": "kt-logger",
+  "version": "1.0.1",
   "description": "neat logger",
   "keywords": [
     "logging",
