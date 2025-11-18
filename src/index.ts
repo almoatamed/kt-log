@@ -33,6 +33,9 @@ export const loadConfig = async (): Promise<LoggingConfig> => {
     return cachedConfig;
 };
 
+const originalConsole = { ...console };
+export let forceLog = (..._msg: any) => {};
+
 const getHideAllLogs = async () => {
     const config = await loadConfig();
     return (await valueOf(config.hideAllLogs)) ?? false;
@@ -40,6 +43,11 @@ const getHideAllLogs = async () => {
 let hideAllLogs = false;
 getHideAllLogs().then((v) => {
     hideAllLogs = v;
+    if (v) {
+        forceLog = originalConsole.log;
+    } else {
+        forceLog = () => {};
+    }
 });
 const getHideErrors = async () => {
     const config = await loadConfig();
@@ -95,7 +103,6 @@ getOverrideConsoleLog().then((v) => {
     overrideConsoleLog = v;
 });
 
-export const forceLog = hideAllLogs ? () => {} : console.log;
 if (hideAllLogs || hideInfo) console.log = () => {};
 if (hideAllLogs || hideDebug) console.debug = () => {};
 if (hideAllLogs || hideWarnings) console.warn = () => {};
