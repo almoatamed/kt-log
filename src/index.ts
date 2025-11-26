@@ -43,7 +43,7 @@ const getHideAllLogs = async () => {
 let hideAllLogs = false;
 getHideAllLogs().then((v) => {
     hideAllLogs = v;
-    if (v) {
+    if (!v) {
         forceLog = originalConsole.log;
     } else {
         forceLog = () => {};
@@ -152,7 +152,7 @@ const Logger = function (options: LoggerProps) {
             }
             updateTime();
             const consoleLog = `${colors[options.color]}---[${time}]-[ ${process.pid} ]-[ ${String(
-                options.name
+                options.name,
             ).toUpperCase()} ]-[ ${String(options.logLevel).toUpperCase()} ]---${colors.consoleColor}`;
             forceLog(consoleLog, ...msgs);
         }
@@ -171,7 +171,7 @@ const Logger = function (options: LoggerProps) {
 
             updateTime();
             const consoleLog = `${colors[options.color]}---[${time}]-[ ${process.pid} ]-[ ${String(
-                options.name
+                options.name,
             ).toUpperCase()} ]-[ ERROR ]---${colors.consoleColor}`;
             forceLog(consoleLog, ...msgs);
         }
@@ -189,7 +189,7 @@ const Logger = function (options: LoggerProps) {
 
             updateTime();
             const consoleLog = `${colors[options.color]}---[${time}]-[ ${process.pid} ]-[ ${String(
-                options.name
+                options.name,
             ).toUpperCase()} ]-[ WARNING ]---${colors.consoleColor}`;
             forceLog(consoleLog, ...msgs);
         }
@@ -199,17 +199,7 @@ const Logger = function (options: LoggerProps) {
 
 export type LogColor = "black" | "red" | "green" | "yellow" | "blue" | "magenta" | "cyan" | "white" | "consoleColor";
 export type LogLevel = "Info" | "Warning" | "Error";
-export async function createLogger({
-    color,
-    logLevel = "Info",
-    name,
-    worker,
-}: {
-    name: string;
-    color: LogColor;
-    logLevel: LogLevel;
-    worker: boolean;
-}) {
+export async function createLogger({ color, logLevel = "Info", name, worker }: { name: string; color: LogColor; logLevel: LogLevel; worker: boolean }) {
     if (!logLevel) {
         logLevel = "Info";
     }
